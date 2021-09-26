@@ -1,0 +1,38 @@
+# It’s a label for our workflow.
+name: Lint
+
+# executes workflows that are defined with the on key
+on:
+  push:
+    branches:
+      - master
+
+
+# Each workflow is made up of one or more jobs
+jobs:
+  run-linters:
+    name: Run linters
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      # env configuration
+      matrix:
+        os: [ubuntu-latest]
+        node: [13.x, 14.x, 15.x]
+
+    # A step is a sequence of tasks
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Setup node env 🏗
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install dependencies 👨🏻‍💻
+        run: npm ci
+
+      - name: Run linter 👀
+        run: npm run lint
+
